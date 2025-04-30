@@ -1,9 +1,9 @@
-name: Deploy Storybook
+name: Deploy Storybook to GitHub Pages
 
 on:
   push:
     branches:
-      - main # or master, depending on your default branch name
+      - main
 
 # Sets permissions of the GITHUB_TOKEN
 permissions:
@@ -30,7 +30,31 @@ jobs:
         run: npm ci
 
       - name: Build Storybook
-        run: NODE_ENV=production npm run build-storybook
+        run: npm run build-storybook
+        env:
+          NODE_ENV: production
+
+      - name: Create .nojekyll file
+        run: touch storybook-static/.nojekyll
+        shell: bash
+
+      - name: Fix base path in HTML files
+        run: |
+          find storybook-static -name "*.html" -exec sed -i 's|="\/assets\/|="\/ui-component\/assets\/|g' {} \;
+          find storybook-static -name "*.js" -exec sed -i 's|\"\/assets\/|\"\/ui-component\/assets\/|g' {} \;
+        shell: bash
+
+      - name: Check Storybook build
+        run: |
+          if [ -f "storybook-static/index.html" ]; then
+            echo "✅ Storybook build successful"
+            echo "Contents of storybook-static directory:"
+            ls -la storybook-static/
+          else
+            echo "❌ Storybook build failed - index.html not found"
+            exit 1
+          fi
+        shell: bash
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
