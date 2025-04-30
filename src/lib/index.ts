@@ -1,4 +1,14 @@
-// Export all components
-export * from "./components/Button";
-export * from "./components/Table";
-export * from "./utils/cn";
+// Components
+export { Button, type ButtonProps } from "./components/Button";
+export {
+  Table,
+  type TableProps,
+  type ColumnDef,
+  type SortingState,
+} from "./components/Table";
+export {
+  ChartContainer,
+  type ChartContainerProps,
+} from "./components/ChartContainer";
+
+export { cn } from "./utils/cn";
