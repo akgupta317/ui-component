@@ -1,6 +1,4 @@
-import type { StorybookConfig } from "@storybook/react-vite";
-
-const config: StorybookConfig = {
+const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
     "@storybook/addon-links",
@@ -12,8 +10,14 @@ const config: StorybookConfig = {
     name: "@storybook/react-vite",
     options: {},
   },
-  docs: {
-    autodocs: "tag",
+  // Add this for GitHub Pages
+  viteFinal: async (config) => {
+    // Use this for GitHub Pages deployment
+    if (process.env.NODE_ENV === "production") {
+      config.base = "/ui-component/";
+    }
+    return config;
   },
 };
+
 export default config;
